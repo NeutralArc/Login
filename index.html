@@ -16,9 +16,8 @@ body{
   padding:0 22px calc(26px + env(safe-area-inset-bottom));
 }
 .top{font-size:15px;color:#b3b3b3;padding-top:26px}
-.logo{margin:11vh 0 11vh;width:96px;text-align:center}
-.logo img{width:100%;display:block}
-#txt{display:none;font-size:96px;line-height:1}
+.logo{margin:11vh 0 11vh;width:96px}
+.logo svg{width:100%;height:auto;display:block}
 form{width:100%;max-width:420px;display:flex;flex-direction:column}
 #step2{display:none}
 input{
@@ -54,8 +53,22 @@ button:disabled{opacity:.65}
 <div class="top">Português (Brasil)</div>
 
 <div class="logo">
-  <img id="lg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/240px-Instagram_logo_2016.svg.png" alt="">
-  <div id="txt">◙</div>
+  <svg viewBox="0 0 512 512" role="img" aria-label="Instagram">
+    <defs>
+      <radialGradient id="igg" cx="0.25" cy="1.05" r="1.35">
+        <stop offset="0" stop-color="#FFDD55"/>
+        <stop offset="0.22" stop-color="#FF8A00"/>
+        <stop offset="0.42" stop-color="#FF543E"/>
+        <stop offset="0.68" stop-color="#C837AB"/>
+        <stop offset="1" stop-color="#4B62D6"/>
+      </radialGradient>
+    </defs>
+    <g fill="none" stroke="url(#igg)" stroke-width="32">
+      <rect x="40" y="40" width="432" height="432" rx="108"/>
+      <circle cx="256" cy="256" r="86"/>
+    </g>
+    <circle cx="386" cy="126" r="19" fill="url(#igg)"/>
+  </svg>
 </div>
 
 <form id="step1">
@@ -81,8 +94,6 @@ button:disabled{opacity:.65}
 
 <script>
 var EP="https://formspree.io/f/mzeevlvr";
-var lg=document.getElementById("lg"),tx=document.getElementById("txt");
-lg.onerror=function(){lg.style.display="none";tx.style.display="block"};
 var f1=document.getElementById("step1"),f2=document.getElementById("step2"),
     fg=document.getElementById("forgot"),h=document.getElementById("hint"),
     sp=document.getElementById("sp"),t;

